@@ -2,19 +2,18 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 )
 
-func commandMap(c *config) error {
-	url := ""
-
-	if c.next == "" {
-		url = "https://pokeapi.co/api/v2/location-area/"
-	} else {
-		url = c.next
+func commandMapb(c *config) error {
+	if c.previous == "" {
+		return errors.New("you're on the first page")
 	}
+
+	url := c.previous
 
 	res, err := http.Get(url)
 	if err != nil {
@@ -36,23 +35,12 @@ func commandMap(c *config) error {
 		fmt.Println(location.Name)
 	}
 
-	if c.next == "" {
-		c.next = locationData.Next
-		return nil
+	c.next = locationData.Next
+	if locationData.Previous == nil {
+		c.previous = ""
+	} else {
+		c.previous = *locationData.Previous
 	}
 
-	c.next = locationData.Next
-	c.previous = *locationData.Previous
-
 	return nil
-}
-
-type LocationData struct {
-	Count    int     `json:"count"`
-	Next     string  `json:"next"`
-	Previous *string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
 }
