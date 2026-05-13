@@ -18,9 +18,16 @@ func main() {
 		}
 
 		input := scanner.Text()
-
 		cleanInput := cleanInput(input)
 
-		fmt.Printf("Your command was: %s\n", cleanInput[0])
+		for _, command := range getCommands() {
+			for _, userInput := range cleanInput {
+				if command.name == userInput {
+					command.callback()
+				}
+			}
+		}
+
+		fmt.Println("Invalid commend!")
 	}
 }
