@@ -1,15 +1,21 @@
 package main
 
 import (
+	"ZafirChowdhury/pokedexGo/internal/pokeapi"
 	"bufio"
 	"fmt"
 	"os"
 	"strings"
 )
 
-func startRepl() {
+type config struct {
+	pokeapiClient pokeapi.Client
+	nextURL       *string
+	prevURL       *string
+}
+
+func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
-	cfg := &config{}
 
 	for {
 		fmt.Print("Pokedex > ")
@@ -21,6 +27,11 @@ func startRepl() {
 
 		input := scanner.Text()
 		cleanInput := cleanInput(input)
+
+		if len(cleanInput) == 0 {
+			continue
+		}
+
 		userCmd := cleanInput[0]
 
 		command, ok := getCommands()[userCmd]
@@ -51,11 +62,6 @@ type cliCommand struct {
 	callback    func(*config) error
 }
 
-type config struct {
-	next     string
-	previous string
-}
-
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
 		"exit": {
@@ -73,7 +79,7 @@ func getCommands() map[string]cliCommand {
 		"map": {
 			name:        "map",
 			description: "Displays next 20 location",
-			callback:    commandMap,
+			callback:    commandMapf,
 		},
 
 		"mapb": {
