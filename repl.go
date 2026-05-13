@@ -28,7 +28,8 @@ func startRepl() {
 			continue
 		}
 
-		if err := command.callback(); err != nil {
+		cfg := &config{}
+		if err := command.callback(cfg); err != nil {
 			fmt.Println(err)
 		}
 	}
@@ -47,7 +48,12 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
+}
+
+type config struct {
+	next     string
+	previous string
 }
 
 func getCommands() map[string]cliCommand {
@@ -60,8 +66,14 @@ func getCommands() map[string]cliCommand {
 
 		"help": {
 			name:        "help",
-			description: "Prints the usage",
+			description: "Shows the program usage",
 			callback:    commandHelp,
+		},
+
+		"map": {
+			name:        "map",
+			description: "Shows 20 map",
+			callback:    commandMap,
 		},
 	}
 }
