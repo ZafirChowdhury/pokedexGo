@@ -8,7 +8,7 @@ import (
 
 func commandCatch(c *config, args []string) error {
 	if len(args) != 2 {
-		return errors.New("Invalid commend. Usage: catch <pokemon-name>")
+		return errors.New("Invalid command. Usage: catch <pokemon-name>")
 	}
 
 	pokemonName := args[1]
@@ -37,7 +37,7 @@ func commandCatch(c *config, args []string) error {
 	}
 
 	c.caughtPokemon[pokemonName] = pokemonData
-	fmt.Printf("%s was caught!", pokemonName)
+	fmt.Printf("%s was caught!\n", pokemonName)
 
 	return nil
 }
